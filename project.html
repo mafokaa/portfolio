@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Проект — Мария Феоктистова</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400&amp;family=Manrope:wght@400;500;600;700&amp;family=Golos+Text:wght@400;500;600&amp;family=Onest:wght@400;500;600&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,300&amp;family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=Inter+Tight:ital,wght@0,400;0,500;0,800;1,300&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;family=Montserrat:ital,wght@0,400;0,500;0,700;1,300&amp;family=Fira+Sans:ital,wght@0,400;0,500;0,600;1,300&amp;family=Playfair+Display:ital,wght@0,500;0,600;1,400&amp;family=Unbounded:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<script src="./portfolio-data.js"></script>
+<style>
+:root{--bg:#ffffff;--fg:oklch(0.16 0 0);--mute:oklch(0.48 0 0);--line:oklch(0.16 0 0 / .12);--frame:oklch(0.95 0.002 90);--frame2:oklch(0.925 0.002 90);--accent:#5ab0ff;--fd:'Onest',sans-serif;--fi:'Onest',sans-serif;--fb:'Onest',sans-serif;--fdw:600;--fiw:300;--fls:-0.04em}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--fb);-webkit-font-smoothing:antialiased;font-variant-numeric:lining-nums proportional-nums}
+a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent)}
+::selection{background:var(--accent);color:#fff}
+[contenteditable="true"]:focus{outline:1px solid var(--accent)!important;outline-offset:4px}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--fg)">
+
+<nav style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:24px;height:52px;padding:0 clamp(16px,3vw,48px);background:var(--bg);border-bottom:1px solid var(--line)">
+  <a href="{{ homeHref }}" style="font-family:var(--fd);font-weight:var(--fdw);font-size:16px;letter-spacing:-0.02em;white-space:nowrap">← {{ t.first }} {{ t.last }}</a>
+  <div style="flex:1;min-width:0;text-align:center;font-size:14px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.title }}</div>
+  <a href="{{ contactHref }}" style="flex:none;font-size:14px;white-space:nowrap;color:var(--mute)" style-hover="color:var(--accent)">{{ t.contactLabel }}</a>
+</nav>
+
+<header style="max-width:1400px;margin:0 auto;padding:clamp(112px,12vw,176px) clamp(16px,3vw,48px) clamp(48px,6vw,88px);display:flex;flex-direction:column;gap:20px">
+  <a href="{{ backHref }}" style="font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)">{{ secTitle }}</a>
+  <h1 contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ eTitle }}" style="margin:0;font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(52px,9vw,150px);letter-spacing:var(--fls);line-height:.92;text-wrap:balance;outline:{{ eo }}">{{ p.title }}</h1>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px 56px;padding-top:24px;margin-top:16px;border-top:1px solid var(--line)">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)">{{ t.desc }}</span>
+      <p contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ eDesc }}" style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty;outline:{{ eo }}">{{ p.desc }}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)">{{ t.task }}</span>
+      <p contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ eTask }}" style="margin:0;font-size:18px;line-height:1.55;text-wrap:pretty;outline:{{ eo }}">{{ p.task }}</p>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1400px;margin:0 auto;display:flex;flex-direction:column">
+  <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="4">
+    <div style="position:relative">
+      <sc-if value="{{ b.isFull }}" hint-placeholder-val="{{ true }}">
+        <div style="position:relative;width:100%;aspect-ratio:{{ b.aspect }};background:{{ b.bg }}">
+          <image-slot id="{{ b.slotId }}" src="{{ b.src }}" shape="rect" placeholder="{{ t.slotPh }}" style="position:absolute;inset:0"></image-slot>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isGrid }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:{{ b.cols }}">
+          <sc-for list="{{ b.cells }}" as="c" hint-placeholder-count="2">
+            <div style="position:relative;aspect-ratio:{{ b.aspect }};background:{{ c.bg }}">
+              <image-slot id="{{ c.id }}" shape="rect" placeholder="{{ t.slotPh }}" style="position:absolute;inset:0"></image-slot>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isVideo }}" hint-placeholder-val="{{ false }}">
+        <div style="position:relative;width:100%;aspect-ratio:{{ b.aspect }};background:{{ b.bg }};overflow:hidden">
+          {{ b.media }}
+          <sc-if value="{{ b.noSrc }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;color:var(--mute)">
+              <span style="font-size:40px;line-height:1;color:var(--fg)">▶</span>
+              <span style="font-size:18px;color:var(--fg)">{{ t.videoPh }}</span>
+              <span style="font-size:14px;max-width:360px">{{ t.videoHint }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:10px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.12);font:500 13px var(--fb);color:#161616">
+              <span style="color:var(--mute);flex:none">{{ t.ed.videoPath }}</span>
+              <span contentEditable="true" suppressContentEditableWarning="{{ true }}" onBlur="{{ b.eSrc }}" style="flex:1;min-width:0;outline:1px dashed var(--line);padding:2px 6px">{{ b.srcText }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:clamp(56px,8vw,128px) clamp(20px,8vw,160px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px">
+          <h3 contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ b.eTitle }}" style="margin:0;font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(32px,4vw,60px);letter-spacing:var(--fls);line-height:1;text-wrap:balance;outline:{{ eo }}">{{ b.title }}</h3>
+          <p contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ b.eText }}" style="margin:0;max-width:680px;font-family:var(--fi);font-style:italic;font-weight:var(--fiw);font-size:clamp(19px,1.7vw,24px);line-height:1.4;text-wrap:pretty;outline:{{ eo }}">{{ b.text }}</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isCtr }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
+          <sc-for list="{{ b.cards }}" as="c" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column">
+              <div style="position:relative;aspect-ratio:3/4;background:{{ c.bg }}">
+                <image-slot id="{{ c.id }}" shape="rect" placeholder="{{ t.slotPh }}" style="position:absolute;inset:0"></image-slot>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px;padding:20px clamp(16px,1.6vw,24px) 32px">
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+                  <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 11px var(--fb);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)">CTR {{ t.before }}</span><span contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ c.eBefore }}" style="font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(24px,2.2vw,34px);letter-spacing:-0.03em;color:var(--mute);outline:{{ eo }}">{{ c.before }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 11px var(--fb);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)">CTR {{ t.after }}</span><span contentEditable="{{ editing }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ c.eAfter }}" style="font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(24px,2.2vw,34px);letter-spacing:-0.03em;outline:{{ eo }}">{{ c.after }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span style="font:500 11px var(--fb);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)">{{ t.growth }}</span><span style="font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(24px,2.2vw,34px);letter-spacing:-0.03em;color:var(--accent)">{{ c.delta }}</span></div>
+                </div>
+                <div style="position:relative;height:6px;border-radius:99px;overflow:hidden;background:var(--frame)"><div style="position:absolute;inset:0;background:var(--accent)"></div><div style="position:absolute;left:0;top:0;bottom:0;width:{{ c.bar }};border-radius:99px;background:var(--fg)"></div></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:12px;left:12px;z-index:5;display:flex;align-items:center;gap:4px;padding:5px;border-radius:10px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.14);font:500 12px var(--fb);color:#161616">
+          <span style="padding:0 6px;color:var(--mute)">{{ b.label }}</span>
+          <sc-if value="{{ b.hasAspect }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ b.cycle }}" style="border:1px solid var(--line);background:#fff;color:#161616;font:inherit;padding:5px 9px;border-radius:6px;cursor:pointer">{{ b.aspectLabel }}</button>
+          </sc-if>
+          <button onClick="{{ b.up }}" style="border:1px solid var(--line);background:#fff;color:#161616;font:inherit;padding:5px 9px;border-radius:6px;cursor:pointer">↑</button>
+          <button onClick="{{ b.down }}" style="border:1px solid var(--line);background:#fff;color:#161616;font:inherit;padding:5px 9px;border-radius:6px;cursor:pointer">↓</button>
+          <button onClick="{{ b.remove }}" style="border:1px solid var(--line);background:#fff;color:var(--accent);font:inherit;padding:5px 9px;border-radius:6px;cursor:pointer">✕</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+</main>
+
+<sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1400px;margin:24px auto 0;padding:0 clamp(16px,3vw,48px);box-sizing:border-box">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:24px;border:1px dashed var(--accent);border-radius:14px">
+      <span style="font:500 12px var(--fb);text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-right:8px">{{ t.ed.addBlock }}</span>
+      <sc-for list="{{ addBtns }}" as="a" hint-placeholder-count="6">
+        <button onClick="{{ a.add }}" style="border:1px solid var(--accent);background:transparent;color:var(--accent);font:500 12px var(--fb);padding:8px 14px;cursor:pointer">{{ a.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<section style="max-width:1400px;margin:0 auto;padding:clamp(80px,10vw,150px) clamp(16px,3vw,48px) 32px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:18px;border-top:1px solid var(--fg);font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase">
+    <span style="color:var(--mute)">{{ t.nextProject }}</span>
+    <a href="{{ homeHref }}">{{ t.allProjects }} ↗</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:24px 48px;align-items:end;margin-top:28px">
+    <div style="position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:var(--frame)">
+      <image-slot id="{{ next.coverId }}" src="{{ next.coverSrc }}" shape="rect" placeholder="{{ t.coverPh }}" style="position:absolute;inset:0"></image-slot>
+      <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}"><a href="{{ next.href }}" aria-label="{{ next.title }}" style="position:absolute;inset:0;z-index:1"></a></sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)">{{ next.sec }}</span>
+      <a href="{{ next.href }}" style="font-family:var(--fd);font-weight:var(--fdw);font-size:clamp(40px,5.6vw,88px);letter-spacing:var(--fls);line-height:.95" style-hover="color:var(--accent)">{{ next.title }} →</a>
+    </div>
+  </div>
+  <footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;margin-top:clamp(72px,9vw,140px);padding-top:18px;border-top:1px solid var(--line);font:500 12px var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)">
+    <span>© 2026 {{ t.first }} {{ t.last }}</span>
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <a href="https://t.me/mafokaa" target="_blank" style="color:var(--mute)" style-hover="color:var(--accent)">Telegram @mafokaa</a>
+      <a href="mailto:feoktistova.dsgn@gmail.com" style="color:var(--mute)" style-hover="color:var(--accent)">feoktistova.dsgn@gmail.com</a>
+    </div>
+  </footer>
+</section>
+
+<sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px clamp(16px,3vw,48px);background:var(--accent);color:#fff;font:500 12px var(--fb)">{{ t.ed.banner }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;editMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Редактирование&quot;},&quot;fontPair&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;onest&quot;,&quot;geometric&quot;,&quot;inter&quot;,&quot;manrope&quot;,&quot;golos&quot;,&quot;plex&quot;,&quot;grotesk&quot;,&quot;montserrat&quot;,&quot;fira&quot;,&quot;wide&quot;,&quot;serif&quot;,&quot;playfair&quot;,&quot;mix&quot;],&quot;default&quot;:&quot;onest&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стиль&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#5ab0ff&quot;,&quot;#1e8bff&quot;,&quot;#3d5afe&quot;,&quot;#1a1a1a&quot;],&quot;default&quot;:&quot;#5ab0ff&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стиль&quot;}}">
+const h = React.createElement;
+const LABELS = { full: ['Во всю ширину', 'Full width'], pair: ['Две рядом', 'Two up'], trio: ['Три рядом', 'Three up'], video: ['Видео / GIF', 'Video / GIF'], text: ['Текст', 'Text'], ctr: ['CTR', 'CTR'] };
+
+class Component extends DCLogic {
+  state = { lang: 'ru', content: null, pid: null };
+
+  componentDidMount() {
+    const qs = new URLSearchParams(location.search);
+    const pid = qs.get('p') || (location.hash.match(/p=([^&]+)/) || [])[1] || null;
+    const init = () => {
+      if (!window.PF) return setTimeout(init, 30);
+      this.setState({ lang: PF.getLang(), content: PF.load(), pid: pid && decodeURIComponent(pid) }, () => PF.applyStyle(this.props.fontPair, this.props.accent));
+      PF.loadSheet().then(c => { if (c) this.setState({ content: c }); });
+    };
+    init();
+    this.onStore = e => { if (window.PF && e.key === PF.KEY && !(this.state.content && this.state.content.fromSheet)) this.setState({ content: PF.load() }); };
+    window.addEventListener('storage', this.onStore);
+  }
+  componentDidUpdate(pp) {
+    if (window.PF && (pp.fontPair !== this.props.fontPair || pp.accent !== this.props.accent)) PF.applyStyle(this.props.fontPair, this.props.accent);
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this.onStore); }
+  mut(fn) { const c = JSON.parse(JSON.stringify(this.state.content)); fn(c); PF.save(c); this.setState({ content: c }); }
+
+  media(b) {
+    if (!b.src) return null;
+    const st = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' };
+    if (/\.gif(\?|$)/i.test(b.src)) return h('img', { key: b.src, src: b.src, alt: '', style: st });
+    return h('video', { key: b.src, src: b.src, autoPlay: true, loop: true, playsInline: true, preload: 'auto', style: st,
+      ref: el => { if (el) { el.muted = true; const p = el.play && el.play(); p && p.catch && p.catch(() => {}); } } });
+  }
+
+  renderVals() {
+    const { lang, content, pid } = this.state;
+    if (!content || !window.PF) return {};
+    const t = PF.T[lang], li = lang === 'ru' ? 0 : 1;
+    const editing = !!this.props.editMode;
+    const flat = [];
+    content.sections.forEach((s, si) => PF.isLinkable(s.type) && s.projects.forEach((p, pi) => flat.push({ s, si, p, pi })));
+    if (!flat.length) return { t, homeHref: PF.homeHref, p: { title: '' }, blocks: [], next: {} };
+    let k = Math.max(0, flat.findIndex(x => x.p.id === pid));
+    const { s, si, p, pi } = flat[k];
+    const nx = flat[(k + 1) % flat.length];
+    const at = fn => c => fn(c.sections[si].projects[pi]);
+    const txt = e => e.target.innerText.replace(/\s+/g, ' ').trim();
+    const L0 = () => ({ ru: '', en: '' });
+    const ed = (get, key, pl) => e => { const v = txt(e); if (!v) return this.forceUpdate(); this.mut(at(q => { const o = get(q); o[key] = o[key] || L0(); o[key][lang] = v; })); if (lang === 'ru') PF.push(pl, v); };
+    const ask = () => typeof confirm === 'undefined' || confirm(t.ed.confirm);
+    const move = (arr, i, d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; };
+    let alt = 0;
+    const bg = () => (alt++ % 2 ? 'var(--frame2)' : 'var(--frame)');
+
+    const blocks = (p.blocks || []).filter(b => editing || b.src || (PF.FILLED && PF.FILLED.has(b.id))).map((b, bi) => {
+      const isGrid = false;
+      const n = b.type === 'trio' ? 3 : 2;
+      const o = {
+        id: b.id, label: b.type === 'video' ? LABELS.video[li] : (li ? 'Frame ' : 'Фрейм ') + (bi + 1), aspect: '16/9', aspectLabel: '16:9',
+        isFull: b.type !== 'video', isGrid, isVideo: b.type === 'video', isText: false, isCtr: false,
+        hasAspect: false,
+        up: () => this.mut(at(q => move(q.blocks, bi, -1))), down: () => this.mut(at(q => move(q.blocks, bi, 1))),
+        remove: () => ask() && this.mut(at(q => q.blocks.splice(bi, 1))),
+        cycle: () => this.mut(at(q => { const A = PF.ASPECTS.concat(['9/16']); const i = A.indexOf(q.blocks[bi].aspect); q.blocks[bi].aspect = A[(i + 1) % A.length]; }))
+      };
+      if (o.isFull) { const sl = PF.slot(b.id, b.type === 'full' ? b.src : ''); o.slotId = sl.id; o.src = sl.src; }
+      if (o.isFull || o.isVideo) o.bg = bg();
+      if (isGrid) { o.cols = `repeat(${n},minmax(0,1fr))`; o.cells = Array.from({ length: n }, (_, i) => ({ id: b.id + '-' + (i + 1), bg: bg() })); }
+      if (o.isVideo) {
+        o.media = this.media(b); o.noSrc = !b.src; o.srcText = b.src || 'uploads/video.mp4';
+        o.eSrc = e => { const v = txt(e); this.mut(at(q => { q.blocks[bi].src = v === 'uploads/video.mp4' ? '' : v; })); };
+      }
+      if (o.isText) { o.title = b.title[lang]; o.text = b.text[lang]; o.eTitle = ed(q => q.blocks[bi], 'title'); o.eText = ed(q => q.blocks[bi], 'text'); }
+      if (o.isCtr) {
+        o.cards = b.cards.map((c, ci) => {
+          const num = key => e => { const v = parseFloat(txt(e).replace(',', '.').replace('%', '')); if (isNaN(v) || v <= 0) return this.forceUpdate(); this.mut(at(q => { q.blocks[bi].cards[ci][key] = String(v); })); };
+          const bb = parseFloat(c.before), aa = parseFloat(c.after);
+          return { id: b.id + '-' + (ci + 1), bg: bg(), before: PF.fmt(c.before, lang), after: PF.fmt(c.after, lang), delta: PF.delta(c.before, c.after),
+            bar: Math.min(100, Math.round(bb / Math.max(aa, bb) * 100)) + '%', eBefore: num('before'), eAfter: num('after') };
+        });
+      }
+      return o;
+    });
+
+    const add = type => () => this.mut(at(q => { q.blocks = q.blocks || []; q.blocks.push(PF.newBlock(type, q.id)); }));
+    const setLang = l => { PF.setLang(l); this.setState({ lang: l }); };
+    return {
+      notEditing: !editing, contactHref: PF.homeHref + '#contact', t, editing, eo: editing ? '1px dashed var(--line)' : 'none', homeHref: PF.homeHref, backHref: PF.homeHref + '#' + s.id,
+      secNum: String(si + 2).padStart(2, '0'), secTitle: s.title[lang],
+      p: { title: p.title[lang], meta: p.meta[lang], desc: (p.descFull && p.descFull[lang]) || p.desc[lang], task: (p.taskFull && p.taskFull[lang]) || p.task[lang] },
+      eTitle: ed(q => q, 'title', PF.place(s.title.ru, pi + 1, 'Название')), eMeta: ed(q => q, 'meta'), eDesc: ed(q => q, 'descFull', PF.place(s.title.ru, pi + 1, 'Описание (подробно)')), eTask: ed(q => q, 'taskFull', PF.place(s.title.ru, pi + 1, 'Задача (подробно)')),
+      blocks,
+      addBtns: [['full', t.ed.bFull], ['video', t.ed.bVideo]].map(([ty, label]) => ({ label, add: add(ty) })),
+      next: { href: PF.projectHref(nx.p.id), coverId: PF.slot(nx.p.id + '-cover', nx.p.cover).id, coverSrc: nx.p.cover || '', title: nx.p.title[lang], sec: nx.s.title[lang] },
+      setRu: () => setLang('ru'), setEn: () => setLang('en'),
+      ruColor: lang === 'ru' ? 'var(--fg)' : 'var(--mute)', enColor: lang === 'en' ? 'var(--fg)' : 'var(--mute)'
+    };
+  }
+}
+</script>
+</body>
+</html>

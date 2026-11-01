@@ -1,0 +1,31 @@
+# Служебное macOS / редакторов
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Настройки Claude Code (локальный предпросмотр)
+.claude/
+
+# Vercel CLI
+.vercel/
+
+# Исходники и архив — хранить на Диске, не в репозитории
+_archive/
+originals/
+*.psd
+*.ai
+*.fig
+*.tif
+*.tiff
+*.heic
+*.raw
+
+# Видео — выкладывать на Vimeo/YouTube и вставлять ссылкой
+*.mp4
+*.mov
+
+# Временные файлы
+*.log
+*.tmp
+node_modules/
