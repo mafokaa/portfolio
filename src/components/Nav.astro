@@ -1,0 +1,23 @@
+---
+import { site } from '../data/site';
+
+interface Props { home?: boolean; title?: string; }
+const { home = false, title } = Astro.props;
+---
+<nav>
+  <a class="brand display" href={home ? '#top' : '/'}>{home ? '' : '← '}{site.name}</a>
+  <div class="mid">{title}</div>
+  <a class="contact" href={home ? '#contact' : '/#contact'}>Связь со мной</a>
+</nav>
+
+<style>
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; align-items: center; gap: 24px; height: 52px; padding: 0 var(--gutter);
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .brand { font-size: 16px; letter-spacing: -0.02em; white-space: nowrap; }
+  .mid { flex: 1; min-width: 0; text-align: center; font-size: 14px; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .contact { flex: none; font-size: 14px; white-space: nowrap; color: var(--mute); }
+  .contact:hover { color: var(--accent); }
+</style>

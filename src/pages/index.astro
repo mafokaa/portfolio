@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import MarketProject from '../components/MarketProject.astro';
+import Contact from '../components/Contact.astro';
+import { site, nbsp } from '../data/site';
+import { projectsBySection, isLinkable } from '../data/projects';
+
+const groups = await projectsBySection();
+---
+<Base title={site.title}>
+  <Nav home />
+
+  <section id="top" class="top">
+    <Hero />
+    <div class="toc" data-reveal>
+      {groups.map(g => <a href={`#${g.section.id}`}>{g.section.title}</a>)}
+    </div>
+  </section>
+
+  <section id="about" class="wrap about">
+    <div class="frame photo" data-reveal>
+      <Image src={site.about.photo} alt={site.name} widths={[480, 720, 960, 1280]} sizes="(min-width: 900px) 640px, 100vw" />
+    </div>
+    <div class="about-text" data-reveal>
+      <div class="label">Обо мне</div>
+      <h2 class="display">{site.about.title}</h2>
+      <p class="italic">{site.about.text}</p>
+      <div class="facts">
+        {site.about.facts.map(f => <div><span>{f.k}</span><span>{f.v}</span></div>)}
+      </div>
+    </div>
+  </section>
+
+  {groups.map(({ section: s, projects }) => (
+    <section id={s.id} class="wrap">
+      <header data-reveal>
+        <h2 class="display">{nbsp(s.title)}</h2>
+        <p class="italic">{s.lead}</p>
+      </header>
+      {s.type === 'market'
+        ? <div class="market">{projects.map(p => <MarketProject project={p} />)}</div>
+        : <div class="cards">{projects.map(p => <ProjectCard project={p} linkable={isLinkable(s)} />)}</div>}
+    </section>
+  ))}
+
+  <Contact />
+</Base>
+
+<style>
+  .top {
+    min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(32px, 4vw, 56px); padding: 100px var(--gutter) 48px; max-width: 1680px; margin: 0 auto;
+  }
+  .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px; font-size: 16px; }
+  .wrap { scroll-margin-top: 52px; padding: clamp(64px, 9vw, 140px) var(--gutter); max-width: 1680px; margin: 0 auto; }
+
+  .about { display: flex; flex-wrap: wrap; gap: clamp(32px, 5vw, 96px); align-items: center; padding-block: clamp(72px, 10vw, 150px); }
+  .photo { flex: 1 1 380px; aspect-ratio: 4 / 5; max-width: 640px; border-radius: 14px; }
+  .about-text { flex: 1.2 1 380px; display: flex; flex-direction: column; gap: 28px; }
+  .about h2 { white-space: pre-line; margin: 0; font-size: clamp(32px, 4.2vw, 68px); line-height: 1.05; }
+  .about p { margin: 0; font-size: clamp(20px, 1.8vw, 26px); line-height: 1.4; max-width: 620px; text-wrap: pretty; }
+  .facts { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .facts div { display: flex; justify-content: space-between; gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+  .facts span:first-child { color: var(--mute); }
+  .facts span:last-child { text-align: right; }
+
+  header { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; margin-bottom: clamp(40px, 5vw, 80px); }
+  header h2 { margin: 0; font-size: clamp(52px, 9vw, 150px); line-height: 1.02; text-wrap: balance; }
+  header p { margin: 0; max-width: 720px; font-size: clamp(20px, 2vw, 30px); letter-spacing: -0.015em; line-height: 1.2; text-wrap: balance; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: clamp(48px, 5vw, 80px) clamp(16px, 2vw, 28px); }
+  .market { display: flex; flex-direction: column; gap: clamp(72px, 9vw, 140px); }
+</style>

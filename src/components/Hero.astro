@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+
+const last = site.hero.length - 1;
+let step = 0;
+const lines = site.hero.map((l, i) => ({
+  before: l.before.map(t => ({ ...t, step: step++ })),
+  letters: [...l.word].map(ch => ({ ch, step: step++ })),
+  after: l.after.map(t => ({ ...t, step: step++ })),
+  hl: i === last
+}));
+---
+<h1 class="hero display" aria-label={site.hero.map(l => l.word).join(' ')} data-hero>
+  {lines.map(l => (
+    <span class="line" aria-hidden="true">
+      {l.before.map(t => (
+        <span class="tile" data-step={t.step} data-kind="tile" style={`width:${t.w}em`}>
+          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" /></span>
+        </span>
+      ))}
+      <span class:list={['word', { hl: l.hl }]}>
+        {l.hl && <><span class="hl-bg" /><span class="bar l"><span class="dot" /></span><span class="bar r"><span class="dot" /></span></>}
+        {l.letters.map(x => <span class="ch" data-step={x.step}>{x.ch}</span>)}
+      </span>
+      {l.after.map(t => (
+        <span class="tile" data-step={t.step} data-kind="tile" style={`width:${t.w}em`}>
+          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" /></span>
+        </span>
+      ))}
+    </span>
+  ))}
+</h1>
+
+<style>
+  .hero {
+    margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center;
+    font-size: clamp(40px, max(7vw, min(12vw, 52px)), 124px); line-height: 1.02;
+  }
+  .line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 0.14em; }
+  .word { position: relative; display: inline-flex; isolation: isolate; }
+  .ch { position: relative; display: inline-block; }
+
+  .tile { position: relative; flex: none; height: 0.72em; align-self: center; }
+  .tile .frame { position: absolute; inset: 0; border-radius: 0.08em; transition: opacity .35s ease, transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+
+  /* Выделение последнего слова */
+  .hl { padding: 0 0.06em; }
+  .hl-bg { position: absolute; inset: 0.04em 0; z-index: -1; background: var(--accent-soft); transform-origin: left; transition: transform .55s cubic-bezier(.6, 0, .2, 1); }
+  .bar { position: absolute; top: 0.04em; bottom: 0.04em; width: 0.035em; min-width: 3px; background: var(--accent); transition: opacity .3s ease .35s; }
+  .bar.l { left: 0; }
+  .bar.r { right: 0; }
+  .dot { position: absolute; width: 0.09em; height: 0.09em; min-width: 10px; min-height: 10px; border-radius: 50%; background: var(--accent); }
+  .l .dot { left: 50%; top: 0; transform: translate(-50%, -70%); }
+  .r .dot { left: 50%; bottom: 0; transform: translate(-50%, 70%); }
+
+  /* Анимация набора — включается скриптом; без JS всё видно сразу */
+  :global(.js) .hero:not(.done) .ch:not(.on) { visibility: hidden; }
+  :global(.js) .hero:not(.done) .tile:not(.on) .frame { opacity: 0; transform: scale(.6); }
+  :global(.js) .hero:not(.sel) .hl-bg { transform: scaleX(0); }
+  :global(.js) .hero:not(.sel) .bar { opacity: 0; }
+
+  .hero :global(.caret) {
+    position: absolute; top: 0.08em; bottom: 0.02em; right: -0.05em; width: 0.055em; min-width: 3px;
+    border-radius: 2px; background: var(--accent); pointer-events: none;
+  }
+  .hero :global(.caret.start) { right: auto; left: -0.05em; }
+  .hero :global(.caret.blink) { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+</style>
+
+<script>
+  const h = document.querySelector<HTMLElement>('[data-hero]');
+  if (h) {
+    const els = [...h.querySelectorAll<HTMLElement>('[data-step]')].sort((a, b) => +a.dataset.step! - +b.dataset.step!);
+    const finish = () => h.classList.add('done', 'sel');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
+    else {
+      // Паузы: фото — 260 мс, буква — 55–115 мс, после каждой строки ещё 220 мс
+      const delays = els.map(el => (el.dataset.kind === 'tile' ? 260 : 55 + Math.random() * 60));
+      h.querySelectorAll('.line').forEach(line => {
+        const lastEl = [...line.querySelectorAll<HTMLElement>('[data-step]')].pop();
+        if (lastEl) delays[els.indexOf(lastEl)] += 220;
+      });
+      const caret = document.createElement('span');
+      caret.className = 'caret start';
+      els[0].append(caret);
+      let k = 0;
+      const tick = () => {
+        if (k >= els.length) {
+          caret.classList.add('blink');
+          setTimeout(() => { caret.remove(); h.classList.add('done', 'sel'); }, 350);
+          return;
+        }
+        setTimeout(() => {
+          const el = els[k++];
+          el.classList.add('on');
+          caret.className = 'caret';
+          el.append(caret);
+          tick();
+        }, delays[k]);
+      };
+      setTimeout(tick, 400);
+    }
+  }
+</script>

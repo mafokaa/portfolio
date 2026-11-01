@@ -1,0 +1,91 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { site, nbsp } from '../../data/site';
+import { linkableProjects, projectHref, type Project } from '../../data/projects';
+import type { Section } from '../../data/site';
+
+export async function getStaticPaths() {
+  const list = await linkableProjects();
+  return list.map((x, i) => {
+    const [section, project] = x.project.id.split('/');
+    return { params: { section, project }, props: { ...x, next: list[(i + 1) % list.length] } };
+  });
+}
+
+interface Props { project: Project; section: Section; next: { project: Project; section: Section }; }
+const { project, section, next } = Astro.props;
+const d = project.data;
+---
+<Base title={`${d.title} — ${site.name}`} description={d.desc}>
+  <Nav title={d.title} />
+
+  <header class="head">
+    <a class="label" href={`/#${section.id}`}>{section.title}</a>
+    <h1 class="display">{d.title}</h1>
+    <div class="meta">
+      <div><span class="label">Описание</span><p>{d.descFull || d.desc}</p></div>
+      <div><span class="label">Задача</span><p>{d.taskFull || d.task}</p></div>
+    </div>
+  </header>
+
+  <main>
+    {d.frames.map((f, i) => (
+      <div class:list={['frame', { alt: i % 2 }]}>
+        {'video' in f
+          ? <video src={f.video} autoplay loop muted playsinline preload="metadata"></video>
+          : <Image src={f} alt={`${d.title} — кадр ${i + 1}`} widths={[640, 960, 1400, 2000, 2400]} sizes="(min-width: 1400px) 1400px, 100vw" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />}
+      </div>
+    ))}
+  </main>
+
+  <section class="next">
+    <div class="bar label">
+      <span>Следующий проект</span>
+      <a href="/">Все проекты ↗</a>
+    </div>
+    <div class="grid">
+      <a class="frame cover" href={projectHref(next.project)} aria-label={next.project.data.title}>
+        {next.project.data.cover && <Image src={next.project.data.cover} alt="" widths={[640, 960, 1280]} sizes="(min-width: 900px) 50vw, 100vw" />}
+      </a>
+      <div class="title">
+        <span class="label">{nbsp(next.section.title)}</span>
+        <a class="display" href={projectHref(next.project)}>{next.project.data.title} →</a>
+      </div>
+    </div>
+    <footer class="label">
+      <span>© 2026 {site.name}</span>
+      <div>
+        <a href={`https://t.me/${site.telegram}`} target="_blank" rel="noopener">Telegram @{site.telegram}</a>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </footer>
+  </section>
+</Base>
+
+<style>
+  .head { max-width: 1400px; margin: 0 auto; padding: clamp(112px, 12vw, 176px) var(--gutter) clamp(48px, 6vw, 88px); display: flex; flex-direction: column; gap: 20px; }
+  h1 { margin: 0; font-size: clamp(52px, 9vw, 150px); line-height: .92; text-wrap: balance; }
+  .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px 56px; padding-top: 24px; margin-top: 16px; border-top: 1px solid var(--line); }
+  .meta div { display: flex; flex-direction: column; gap: 8px; }
+  .meta p { margin: 0; font-size: 18px; line-height: 1.55; text-wrap: pretty; }
+
+  main { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; }
+  main .frame { width: 100%; aspect-ratio: 16 / 9; }
+  main .frame.alt { background: var(--frame2); }
+
+  .next { max-width: 1400px; margin: 0 auto; padding: clamp(80px, 10vw, 150px) var(--gutter) 32px; box-sizing: border-box; }
+  .bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 18px; border-top: 1px solid var(--fg); }
+  .bar a { color: var(--fg); }
+  .bar a:hover { color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 24px 48px; align-items: end; margin-top: 28px; }
+  .cover { aspect-ratio: 16 / 9; border-radius: 14px; }
+  .title { display: flex; flex-direction: column; gap: 10px; }
+  .title a { font-size: clamp(40px, 5.6vw, 88px); line-height: .95; }
+  .title a:hover { color: var(--accent); }
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; margin-top: clamp(72px, 9vw, 140px); padding-top: 18px; border-top: 1px solid var(--line); }
+  footer div { display: flex; gap: 24px; flex-wrap: wrap; }
+  footer a { color: var(--mute); }
+  footer a:hover { color: var(--accent); }
+</style>

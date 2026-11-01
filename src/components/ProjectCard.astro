@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+import { projectHref } from '../data/projects';
+
+interface Props { project: Project; linkable: boolean; }
+const { project, linkable } = Astro.props;
+const { title, cover, desc, task } = project.data;
+const href = projectHref(project);
+---
+<article data-reveal>
+  <div class="frame cover">
+    {cover && <Image src={cover} alt={title} widths={[640, 960, 1280, 1920]} sizes="(min-width: 1140px) 50vw, 100vw" />}
+    {linkable && <>
+      <a class="overlay" href={href} aria-label={title}></a>
+      <a class="pill open" href={href}>Смотреть проект →</a>
+    </>}
+  </div>
+  <h3 class="display">{linkable ? <a href={href}>{title}</a> : title}</h3>
+  <div class="meta">
+    <div><span class="label-sm">Описание</span><p>{desc}</p></div>
+    <div><span class="label-sm">Задача</span><p>{task}</p></div>
+  </div>
+</article>
+
+<style>
+  article { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .cover { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; }
+  .overlay { position: absolute; inset: 0; z-index: 1; }
+  .open { position: absolute; z-index: 2; right: 14px; bottom: 14px; }
+  h3 { margin: 0; font-size: clamp(26px, 2.4vw, 36px); line-height: 1.05; }
+  h3 a:hover { color: inherit; }
+  .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px 32px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .meta div { display: flex; flex-direction: column; gap: 6px; }
+  .meta p { margin: 0; font-size: 16px; line-height: 1.5; text-wrap: pretty; }
+</style>

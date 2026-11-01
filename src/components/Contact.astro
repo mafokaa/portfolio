@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+---
+<section id="contact" class="wrap">
+  <div class="label head" data-reveal>Связь со мной</div>
+  <p class="line display" data-reveal>
+    {site.contactLine.map(x => typeof x === 'string'
+      ? <span>{x}</span>
+      : <span class="obj"><span>(</span><span class="pic"><Image src={x} alt="" widths={[120, 240]} sizes="180px" /></span><span>)</span></span>)}
+  </p>
+  <div class="links" data-reveal>
+    <a href={`https://t.me/${site.telegram}`} target="_blank" rel="noopener">
+      <span class="label">Telegram</span>
+      <span class="mark display big">@{site.telegram}<span class="d l" /><span class="d r" /></span>
+    </a>
+    <a href={`mailto:${site.email}`} class="mail">
+      <span class="label">E‑mail</span>
+      <span class="mark display">{site.email}<span class="d l" /><span class="d r" /></span>
+    </a>
+    <button type="button" class="label copy" data-copy={site.email}>Скопировать почту</button>
+  </div>
+  <footer class="label">
+    <span>© 2026 {site.name}</span><span>{site.city}</span>
+  </footer>
+</section>
+
+<style>
+  .wrap { scroll-margin-top: 52px; padding: clamp(80px, 12vw, 180px) var(--gutter) 32px; max-width: 1680px; margin: 0 auto; }
+  .head { margin-bottom: clamp(28px, 4vw, 56px); }
+  .line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.28em 0.24em; font-size: clamp(44px, 8.4vw, 148px); line-height: 1.15; }
+  .obj { display: inline-flex; align-items: center; gap: 0.02em; }
+  .pic { position: relative; display: inline-block; width: 1.2em; height: 0.86em; border-radius: 10px; overflow: hidden; }
+  .pic :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .links { display: flex; flex-direction: column; align-items: flex-end; gap: clamp(28px, 3vw, 44px); margin-top: clamp(80px, 12vw, 200px); }
+  .links a { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 12px 24px; color: var(--fg); max-width: 100%; }
+  .mark {
+    position: relative; padding: 0 0.16em; background: var(--accent-soft);
+    border-left: 3px solid var(--accent); border-right: 3px solid var(--accent);
+    font-size: clamp(24px, 4.4vw, 76px); line-height: 1.15; overflow-wrap: anywhere;
+  }
+  .mark.big { font-size: clamp(36px, 5.4vw, 92px); }
+  .d { position: absolute; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); }
+  .d.l { left: -8px; top: -9px; }
+  .d.r { right: -8px; bottom: -9px; }
+  .copy { border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit; color: var(--accent); }
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: clamp(64px, 8vw, 120px); }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  if (btn) {
+    const email = btn.dataset.copy!, label = btn.textContent;
+    let t: ReturnType<typeof setTimeout>;
+    const copy = () => {
+      navigator.clipboard?.writeText(email).catch(() => {});
+      btn.textContent = 'Почта скопирована';
+      clearTimeout(t); t = setTimeout(() => (btn.textContent = label), 1800);
+    };
+    btn.addEventListener('click', copy);
+    // Cmd/Ctrl+C без выделенного текста копирует почту
+    addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c' && !String(getSelection())) copy(); });
+  }
+</script>
