@@ -1133,7 +1133,7 @@
       // data:image/ URLs from it. The `src` attribute is author-controlled
       // (Claude wrote it into the HTML) so it passes through unchanged.
       let stored = this.id ? getSlot(this.id) : this._local;
-      if (stored && stored.u && !/^data:image\//i.test(stored.u) && !/^images\/[\w.-]+\.(webp|jpe?g|png|gif)$/i.test(stored.u)) stored = null;
+      if (stored && stored.u && !/^data:image\//i.test(stored.u) && !/^images\/(?:[\w-]+\/)*[\w.-]+\.(webp|jpe?g|png|gif)$/i.test(stored.u)) stored = null;
       const srcAttr = this.getAttribute('src') || '';
       this._userUrl = (stored && stored.u) || null;
       const url = this._userUrl || srcAttr;
