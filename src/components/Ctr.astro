@@ -1,0 +1,24 @@
+---
+interface Props { before: number; after: number; }
+const { before, after } = Astro.props;
+const fmt = (v: number) => String(v).replace('.', ',') + '%';
+const delta = (after >= before ? '+' : '') + Math.round((after / before - 1) * 100) + '%';
+const bar = Math.min(100, Math.round(before / Math.max(after, before) * 100)) + '%';
+---
+<div class="nums">
+  <div><span class="label-sm">CTR до</span><span class="v display muted">{fmt(before)}</span></div>
+  <div><span class="label-sm">CTR после</span><span class="v display">{fmt(after)}</span></div>
+  <div class="end"><span class="label-sm">Рост</span><span class="v display accent">{delta}</span></div>
+</div>
+<div class="track"><div class="before" style={`width:${bar}`}></div></div>
+
+<style>
+  .nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .nums div { display: flex; flex-direction: column; gap: 4px; }
+  .nums .end { align-items: flex-end; }
+  .v { font-size: clamp(24px, 2.2vw, 34px); letter-spacing: -0.03em; }
+  .muted { color: var(--mute); }
+  .accent { color: var(--accent); }
+  .track { position: relative; height: 6px; border-radius: 99px; overflow: hidden; background: var(--accent); }
+  .before { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; background: var(--fg); }
+</style>
