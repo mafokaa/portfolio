@@ -18,10 +18,11 @@ export const site = {
   email: 'feoktistova.dsgn@gmail.com',
 
   // Первый экран: строки заголовка и фото рядом с ними.
-  // before/after — фото до и после слова; w — ширина в долях высоты строки.
+  // before/after — фото до и после слова; w — ширина в долях высоты строки;
+  // pos — какую часть фото показывать, если оно не влезает целиком: '50% 0%' — верх, '50% 100%' — низ.
   hero: [
     { word: 'Мария', before: [], after: [{ src: hero1, w: 1.5 }, { src: hero2, w: 0.85 }] },
-    { word: 'Феоктистова', before: [{ src: hero3, w: 1.1 }], after: [] },
+    { word: 'Феоктистова', before: [{ src: hero3, w: 1.1, pos: '50% 15%' }], after: [] },
     { word: 'графический', before: [], after: [{ src: hero4, w: 1.25 }] },
     { word: 'дизайнер', before: [{ src: hero5, w: 0.7 }], after: [] }
   ],

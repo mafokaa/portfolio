@@ -16,7 +16,7 @@ const lines = site.hero.map((l, i) => ({
     <span class="line" aria-hidden="true">
       {l.before.map(t => (
         <span class="tile" data-step={t.step} data-kind="tile" style={`width:${t.w}em`}>
-          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" /></span>
+          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" style={t.pos && `object-position:${t.pos}`} /></span>
         </span>
       ))}
       <span class:list={['word', { hl: l.hl }]}>
@@ -25,7 +25,7 @@ const lines = site.hero.map((l, i) => ({
       </span>
       {l.after.map(t => (
         <span class="tile" data-step={t.step} data-kind="tile" style={`width:${t.w}em`}>
-          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" /></span>
+          <span class="frame"><Image src={t.src} alt="" widths={[200, 400]} sizes={`${Math.round(t.w * 124)}px`} loading="eager" style={t.pos && `object-position:${t.pos}`} /></span>
         </span>
       ))}
     </span>
