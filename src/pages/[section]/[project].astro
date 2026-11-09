@@ -25,8 +25,8 @@ const d = project.data;
     <a class="label" href={`/#${section.id}`}>{section.title}</a>
     <h1 class="display">{d.title}</h1>
     <div class="meta">
-      <div><span class="label">Описание</span><p>{d.descFull || d.desc}</p></div>
-      <div><span class="label">Задача</span><p>{d.taskFull || d.task}</p></div>
+      <div><span class="label">Описание</span><p>{nbsp(d.descFull || d.desc)}</p></div>
+      <div><span class="label">Задача</span><p>{nbsp(d.taskFull || d.task)}</p></div>
     </div>
   </header>
 
@@ -69,7 +69,7 @@ const d = project.data;
   h1 { margin: 0; font-size: clamp(52px, 9vw, 150px); line-height: .92; text-wrap: balance; }
   .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px 56px; padding-top: 24px; margin-top: 16px; border-top: 1px solid var(--line); }
   .meta div { display: flex; flex-direction: column; gap: 8px; }
-  .meta p { margin: 0; font-size: 18px; line-height: 1.55; text-wrap: pretty; }
+  .meta p { margin: 0; font-size: 18px; line-height: 1.55; text-wrap: pretty; white-space: pre-line; }
 
   main { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; }
   main .frame { width: 100%; aspect-ratio: 16 / 9; }

@@ -56,5 +56,9 @@ export const sections = [
 
 export type Section = (typeof sections)[number];
 
-// Короткие слова («и», «в», «&») не остаются в конце строки
-export const nbsp = (s: string) => s.replace(/ (\S{1,2}) /g, ' $1 ');
+// Короткие слова («и», «в», «для», «&») не остаются в конце строки,
+// а тире не уходит в начало следующей
+export const nbsp = (s: string) => s
+  .replace(/(^|[\s(«])([^\s(«]{1,3}) (?=\S)/gm, '$1$2 ')
+  .replace(/(^|[\s(«])([^\s(«]{1,3}) (?=\S)/gm, '$1$2 ')
+  .replace(/ —/g, ' —');

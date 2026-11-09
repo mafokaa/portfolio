@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { Project } from '../data/projects';
 import { projectHref } from '../data/projects';
+import { nbsp } from '../data/site';
 
 interface Props { project: Project; linkable: boolean; }
 const { project, linkable } = Astro.props;
@@ -18,8 +19,8 @@ const href = projectHref(project);
   </div>
   <h3 class="display">{linkable ? <a href={href}>{title}</a> : title}</h3>
   <div class="meta">
-    <div><span class="label-sm">Описание</span><p>{desc}</p></div>
-    <div><span class="label-sm">Задача</span><p>{task}</p></div>
+    <div><span class="label-sm">Описание</span><p>{nbsp(desc)}</p></div>
+    <div><span class="label-sm">Задача</span><p>{nbsp(task)}</p></div>
   </div>
 </article>
 
@@ -32,5 +33,5 @@ const href = projectHref(project);
   h3 a:hover { color: inherit; }
   .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px 32px; padding-top: 16px; border-top: 1px solid var(--line); }
   .meta div { display: flex; flex-direction: column; gap: 6px; }
-  .meta p { margin: 0; font-size: 16px; line-height: 1.5; text-wrap: pretty; }
+  .meta p { margin: 0; font-size: 16px; line-height: 1.5; text-wrap: pretty; white-space: pre-line; }
 </style>
